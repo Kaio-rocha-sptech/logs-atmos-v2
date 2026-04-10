@@ -1,0 +1,7 @@
+email: atmos-v2.system@outlook.com
+
+senha: atmos12345#
+
+idaccount: 712020:ca1ff9f9-1ce8-4595-8c5f-b138f083eef4
+
+TOKEN: gere próximo a apresentação

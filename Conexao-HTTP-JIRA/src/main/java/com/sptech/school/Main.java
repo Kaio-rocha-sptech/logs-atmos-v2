@@ -12,9 +12,9 @@ public class Main {
     }
 
     public static void abrirChamado(String mensagem) {
-            String email = "atmos-v2.system@outlook.com";
-            String apiToken = "ATATT3xFfGF00dzQV_IZf53Ti8BKYEO4-SDD_a3zpcTzOGta53iANInnA68sJTCKgrkXPaumVNERW4ueJBA1NOHYYKsq_itMcqwr68TsxHvWVjzwCkfTiadTFyPsO1qB-qoPyUgezXNY6AD5_lFn1Xnu7eAi4FYn-hGKBO7St1z-7EJCDzKm8kU=F1D44244";
-            String auth = Base64.getEncoder().encodeToString((email + ":" + apiToken).getBytes());
+        String email = "COLOQUE O EMAIL DA ATMOS AQUI";
+        String apiToken = "COLOQUE O TOKEN DA CONTA ATMOS AQUI";
+        String auth = Base64.getEncoder().encodeToString((email + ":" + apiToken).getBytes());
 
         try {
             String jsonBody = """
@@ -43,14 +43,14 @@ public class Main {
                               "name": "Alerta"
                             },
                             "assignee": {
-                              "id": "712020:ca1ff9f9-1ce8-4595-8c5f-b138f083eef4"
+                              "id": "idAccount"
                             }
                           }
                         }
                 """.formatted(mensagem);
 
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create("https://sptech13.atlassian.net/rest/api/3/issue"))
+                    .uri(URI.create("URLBASErest/api/3/issue"))
                     .header("Content-Type", "application/json")
                     .header("Authorization", "Basic " + auth)
                     .POST(HttpRequest.BodyPublishers.ofString(jsonBody))

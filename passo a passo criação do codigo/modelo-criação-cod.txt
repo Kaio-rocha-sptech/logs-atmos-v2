@@ -1,0 +1,124 @@
+INTEGRAÇÃO COM JIRA - GUIA BASE
+
+1. AUTENTICAÇÃO
+
+Tipo: Basic Auth
+
+Email: Token:
+
+Obs: - O token substitui a senha. - Gerar token em:
+https://id.atlassian.com/manage-profile/security/api-tokens
+
+2. ENDPOINT DA API
+
+POST https://.atlassian.net/rest/api/3/issue
+
+3. CORPO DA REQUISIÇÃO (JSON) para obter utilize este molde para um requisição GET na API REST do jira
+https://sptech13.atlassian.net/rest/api/3/issue/createmeta?projectKeys=ALT&expand=projects.issuetypes.fields
+
+
+No meu caso:
+{
+  "fields": {
+    "project": {
+      "key": "ALT"
+    },
+    "summary": "Alerta gerado pelo sistema",
+    "description": {
+      "type": "doc",
+      "version": 1,
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "%s"
+            }
+          ]
+        }
+      ]
+    },
+    "issuetype": {
+      "name": "Alerta"
+    },
+    "assignee": null
+  }
+}
+
+4. EXEMPLO EM JAVA
+
+import java.net.URI; import java.net.http.HttpClient; import
+java.net.http.HttpRequest; import java.net.http.HttpResponse; import
+java.util.Base64; import java.time.Duration;
+
+public class JiraIntegration {
+
+    public static void main(String[] args) throws Exception {
+
+        String email = "<SEU_EMAIL_JIRA>";
+        String token = "<SEU_TOKEN_JIRA>";
+        String url = "https://<SEU_DOMINIO>.atlassian.net/rest/api/3/issue";
+
+        String auth = email + ":" + token;
+        String encodedAuth = Base64.getEncoder().encodeToString(auth.getBytes());
+        String authHeader = "Basic " + encodedAuth;
+
+        String jsonBody = """
+        {
+          "fields": {
+            "project": {
+              "key": "<CHAVE_DO_PROJETO>"
+            },
+            "summary": "Alerta gerado automaticamente",
+            "description": {
+              "type": "doc",
+              "version": 1,
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Mensagem dinâmica aqui"
+                    }
+                  ]
+                }
+              ]
+            },
+            "issuetype": {
+              "name": "<TIPO_DO_ISSUE>"
+            },
+            "assignee": null
+          }
+        }
+        """;
+
+        HttpClient client = HttpClient.newHttpClient();
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(new URI(url))
+                .header("Authorization", authHeader)
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
+                .timeout(Duration.ofSeconds(10))
+                .build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        System.out.println("Status Code: " + response.statusCode());
+        System.out.println("Response Body: " + response.body());
+    }
+
+}
+
+5. CHECKLIST FINAL
+
+[ ] Token gerado corretamente
+[ ] Email correto [ ]
+URL correta [ ]
+Projeto existente [ ]
+Tipo de issue válido [ ]
+JSON válido [ ]
+Método
+HTTP = POST
