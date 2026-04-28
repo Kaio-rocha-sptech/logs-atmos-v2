@@ -9,13 +9,11 @@ public class Main {
             String data = LogService.getData();
             String mensagem = LogService.getMensagens();
 
+            Disparador.processarEvento(mensagem, data);
             System.out.println("======================================");
             System.out.println("Data: " + data);
             System.out.println("Mensagem: " + mensagem);
             System.out.println("======================================\n");
-
-
-            Disparador.processarEvento(mensagem, data);
 
             try {
                 Thread.sleep(LogService.getIntervalo());

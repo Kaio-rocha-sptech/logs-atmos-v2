@@ -9,10 +9,10 @@ import java.net.http.HttpResponse;
 public class Slack {
     // SLACK ===================================================== |
     public static HttpClient client = HttpClient.newHttpClient();
-    public static String urlSlack = "https://hooks.slack.com/services/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";
+    public static String urlSlack = "https://hooks.slack.com/services/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";
 
     public static void enviarNotSlack(String tipo, String componente, String data, String responsavel, String idAlerta) throws IOException, InterruptedException {
-
+        System.out.println();
         String mensagem = criarMensagem(
                 tipo,
                 componente,
@@ -28,9 +28,9 @@ public class Slack {
 
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-        System.out.println(String.format("Status: %s", response.statusCode()));
-
-        System.out.println(String.format("Response: %s", response.body()));
+//        System.out.println(String.format("Status: %s", response.statusCode()));
+//
+//        System.out.println(String.format("Response: %s", response.body()));
     }
 
     public static String criarMensagem(String tipo,String componente, String data, String responsavel, String idAlerta){
