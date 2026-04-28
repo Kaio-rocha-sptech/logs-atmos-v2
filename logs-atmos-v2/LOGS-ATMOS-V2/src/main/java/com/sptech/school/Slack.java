@@ -9,7 +9,7 @@ import java.net.http.HttpResponse;
 public class Slack {
     // SLACK ===================================================== |
     public static HttpClient client = HttpClient.newHttpClient();
-    public static String urlSlack = "https://hooks.slack.com/services/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";
+    public static String urlSlack = "URL do incoming wenhook";
 
     public static void enviarNotSlack(String tipo, String componente, String data, String responsavel, String idAlerta) throws IOException, InterruptedException {
         System.out.println();

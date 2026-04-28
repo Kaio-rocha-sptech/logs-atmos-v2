@@ -12,8 +12,8 @@ public class Jira {
 
     // JIRA ====================================================== |
     public static String urlJira = "https://sptech13.atlassian.net/rest/api/3/issue";
-    public static String emailJira = "atmos-v2.system@outlook.com";
-    public static String tokenJira = "ATATT3xFfGF0yvxrOQAzou3rtVvEeSzW9IQWZ3IeRoCUsuBfo_SNFT8t0EynBYBMIYXCd7j_DBy9JqB3jfwOsvaZLH1X1SRYwbOZusMoQ5sph8GP6qtkBBp9ueSQJM3peegEPErTXMCjTiWwWp-ZT0ZwjWk0judix-Q1KSbpf0kkFTbEnJeOavk=2042B3F0";
+    public static String emailJira = "email da atmos";
+    public static String tokenJira = "Token do JIRA";
 
     public static String abrirChamadoJira(String mensagem) throws IOException, InterruptedException {
 
