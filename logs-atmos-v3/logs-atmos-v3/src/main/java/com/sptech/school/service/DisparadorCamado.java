@@ -1,10 +1,15 @@
-package com.sptech.school;
+package com.sptech.school.service;
 
-public class Disparador {
+
+import com.sptech.school.integration.Jira;
+import com.sptech.school.integration.Slack;
+
+public class DisparadorCamado {
     public static void processarEvento(String mensagem, String data) {
         try {
-
             String id = Jira.abrirChamadoJira(mensagem);
+
+
             if(mensagem.toUpperCase().contains("RAM")){
                 Slack.enviarNotSlack(
                         "Alerta",
