@@ -1,30 +1,23 @@
 package com.sptech.school;
-
+import com.fasterxml.jackson.databind.JsonNode;
 import com.sptech.school.service.DisparadorCamado;
 import com.sptech.school.service.LogService;
+import com.sptech.school.service.Relatorio;
 import com.sptech.school.service.S3Service;
+
+import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
         System.out.println("Logs do sistema em tempo real");
+        S3Service s3Service = new S3Service();
+        DisparadorCamado disparadorCamado = new DisparadorCamado();
 
-        while (true) {
-            String data = LogService.getData();
-            String mensagem = LogService.getMensagens();
+        Relatorio relatorio = new Relatorio();
 
-            DisparadorCamado.processarEvento(mensagem, data);
-            System.out.println("======================================");
-            System.out.println("Data: " + data);
-            System.out.println("Mensagem: " + mensagem);
-            System.out.println("======================================\n");
-
-            try {
-                Thread.sleep(LogService.getIntervalo());
-            } catch (InterruptedException e) {
-                System.out.println("Thread interrompida");
-            }
-            System.out.println("fim");
-            break;
-        }
+        JsonNode incidentes =  s3Service.lerArquivoBucket("client/empresaX/incidentes/clientIncidente.json");
+        List<String> csv = disparadorCamado.enviarIncidentes(incidentes);
+        String arquivo = relatorio.criarRelatorio(csv);
+        s3Service.uploadArquivosLocalBucket(arquivo, "client/empresaX/relatorios/"+arquivo);
     }
 }

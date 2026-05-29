@@ -1,8 +1,11 @@
 package com.sptech.school.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.sptech.school.config.AwsConfig;
 import com.sptech.school.config.S3ClientConfig;
 
+import software.amazon.awssdk.core.ResponseBytes;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 
@@ -13,6 +16,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+
+
 
 public class S3Service {
     private static final S3Client CLIENT = S3ClientConfig.criarCliente();
@@ -52,6 +57,42 @@ public class S3Service {
             System.out.println("Arquivo baixado com sucesso!");
         } catch (Exception e) {
             System.out.println("Erro ao baixar o arquivo: "+e.getMessage());
+        }
+    }
+
+    public static JsonNode lerArquivoBucket(String arquivoS3) {
+        try {
+            GetObjectRequest request =
+                GetObjectRequest.builder().
+                        bucket(BUCKET).
+                        key(arquivoS3).
+                        build();
+
+            ResponseBytes<GetObjectResponse> resposta = CLIENT.getObjectAsBytes(request);
+            String arquivo = resposta.asUtf8String();
+            JsonMapper mapper = new JsonMapper();
+            JsonNode node = mapper.readTree(arquivo);
+//            System.out.println(node.get(0));
+            return node;
+        } catch (Exception e) {
+            System.out.println("Erro ao ler arquivo: " + e.getMessage());
+        }
+        return null;
+    }
+
+    public static void lerRelatorioS3(String arquivoS3){
+        try {
+            GetObjectRequest request =
+                    GetObjectRequest.builder().
+                            bucket(BUCKET).
+                            key(arquivoS3).
+                            build();
+
+            ResponseBytes<GetObjectResponse> resposta = CLIENT.getObjectAsBytes(request);
+            String arquivo = resposta.asUtf8String();
+            System.out.println(arquivo);
+        } catch (Exception e) {
+            System.out.println("Erro ao ler arquivo: " + e.getMessage());
         }
     }
 
@@ -96,7 +137,27 @@ public class S3Service {
             System.out.println("Erro ao fazer upload: "+e.getMessage());
         }
     }
+    public void uploadArquivosLocalBucket(String arquivoLocal, String diretorioS3){
+        // uso:
+        // s3Service.uploadArquivosBucket("arquivosTemp/trusted_empresaX.csv", "empresax/relatorios/trusted_empresaX.csv");
+        // Obs: se não tiver o diretorio no bucket ele cria
+        try{
+            PutObjectRequest request = PutObjectRequest.builder()
+                    .bucket(BUCKET)
+                    .key(diretorioS3)
+                    .build();
 
+            String diretorio = "arquivoTemp/relatorios/"+arquivoLocal;
+
+            CLIENT.putObject(
+                    request, RequestBody.fromFile(Path.of(diretorio))
+            );
+            System.out.println("Upload realizado!");
+            apagarArquivoLocal(diretorio);
+        } catch (Exception e) {
+            System.out.println("Erro ao fazer upload: "+e.getMessage());
+        }
+    }
 
     public void apagarArquivoLocal(String arquivoLocal){
         try{

@@ -15,8 +15,11 @@ public class Jira {
     public static String urlJira = JiraConfig.getJiraUrl();
     public static String emailJira = JiraConfig.getJiraEmail();
     public static String tokenJira = JiraConfig.getJiraToken();
-    public static String abrirChamadoJira(String mensagem) throws IOException, InterruptedException {
-        System.out.println(emailJira);
+    public static String abrirChamadoJira(String tipo, String componente, String serv, Double valor,
+                                          String mensagem) throws IOException, InterruptedException {
+        String id_teste = "712020:99b2ffca-eed0-4161-8e54-606619d8f594";
+        String id_Atmos = "712020:ca1ff9f9-1ce8-4595-8c5f-b138f083eef4";
+        String usuario = id_teste;
         try{
             String jsonBody = """
                 {
@@ -24,7 +27,11 @@ public class Jira {
                     "project": {
                       "key": "ALT"
                     },
-                    "summary": "Alerta gerado pelo sistema",
+                    "summary": "%s - Alerta gerado pelo sistema",
+                    "labels":[
+                        "%s",
+                        "%s:%s"
+                    ],
                     "description": {
                       "type": "doc",
                       "version": 1,
@@ -44,11 +51,18 @@ public class Jira {
                       "name": "Alerta"
                     },
                     "assignee": {
-                      "id": "712020:ca1ff9f9-1ce8-4595-8c5f-b138f083eef4"
+                      "id": "%s"
                     }
                   }
                 }
-                """.formatted(mensagem);
+                """.formatted(
+                        serv,
+                        tipo,
+                        componente,
+                        valor,
+                        mensagem,
+                        usuario
+                    );
 
             HttpClient client = HttpClient.newHttpClient();
 
@@ -66,16 +80,18 @@ public class Jira {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
             String responseBody = response.body();
-
-//        System.out.println("Status: " + response.statusCode());
-//        System.out.println("Response: " + responseBody);
+//          System.out.println(responseBody);
+//          System.out.println("Status: " + response.statusCode());
+//          System.out.println("Response: " + responseBody);
 
             String id = responseBody.split("\"id\":\"")[1].split("\"")[0];
 
             return id;
         }catch (Exception e){
-            System.out.println("Erro na conexão jira");
+            e.printStackTrace();
             return null;
+//            System.out.println("Erro na conexão jira: "+ e.getMessage());
+//            return null;
         }
     }
 }
