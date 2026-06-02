@@ -68,14 +68,14 @@ public class DisparadorCamado {
                 String mensagem = valorIncidente+"% de "+componenteIncidente.toUpperCase()+" - ";
 
                 if(componenteIncidente.equalsIgnoreCase("RAM")){
-                    mensagem += "";
+                    mensagem += "Limite de RAM excedido no servidor " + hostNameIncidente;
                 } else if (componenteIncidente.equalsIgnoreCase("CPU")) {
-                    mensagem += "";
+                    mensagem += "Limite de CPU excedido no servidor" + hostNameIncidente;
                 } else if (componenteIncidente.equalsIgnoreCase("Disco")
                         || componenteIncidente.equalsIgnoreCase("Armazenamento")) {
-                    mensagem += "";
+                    mensagem += "Limite de DISCO excedido no servidor" + hostNameIncidente;
                 }else{
-                    mensagem += "Não indentificado";
+                    mensagem += "Erro não indentificado";
                 }
 
                 String id = Jira.abrirChamadoJira(tipoIncidente, componenteIncidente, hostNameIncidente,
